@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #1f1f1f;
+        }
+
+        table {
+            background-color: white;
+            padding: 5px;
+            width: 100%;
+        }
+
+        th {
+            text-align: start !important;
+        }
+
+        td:last-child {
+            border: none !important;
+            width: 10px;
+        }
+
+        td:last-child button {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            background-color: red;
+        }
+
+        td {
+            border: 1px solid black;
+        }
+
+        .welcome {
+            background-color: white;
+            padding: 10px;
+            display: flex;
+            gap: 0;
+            justify-content: space-between;
+        }
+
+        input {
+            padding: 10px;
+            width: 200px;
+        }
+
+        .theinput {
+            width: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .theinput:last-child div {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="welcome">
+        <div style="display: flex; flex-direction: column;">
+            <h1>Welcome, Admin</h1>
+            <p>Users: <span id="usersCount">20</span></p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="theinput">
+                <label for="">Name</label>
+                <input id="theName" type="text" placeholder="Name">
+            </div>
+            <div class="theinput">
+                <label for="">Surname</label>
+                <input id="theSurname" type="text" placeholder="Surname">
+            </div>
+            <div class="theinput">
+                <label for="Birth">Birthday</label>
+                <input id="theBirthday" type="date">
+            </div>
+            <div class="theinput">
+                <label for="">Gender</label>
+                <select name="" id="theGender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                <div>
+                    <button id="addBTN" style="padding: 10px 20px;">Add</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Birthday</th>
+                <th>Gender</th>
+            </tr>
+        </thead>
+        <tbody id="tBody">
+            <tr>
+                <td id="theID">1341255333</td>
+                <td>Erblin</td>
+                <td>Kqiku</td>
+                <td>2007-01-05</td>
+                <td>Male</td>
+                <td><button onclick="Delete()">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+<script>
+    const usersCount = document.querySelector("#usersCount");
+    const theName = document.querySelector("#theName");
+    const theSurname = document.querySelector("#theSurname");
+    const theBirthday = document.querySelector("#theBirthday");
+    const theGender = document.querySelector("#theGender");
+    const addBTN = document.querySelector("#addBTN");
+    const tBody = document.querySelector("#tBody");
+
+    const users = [];
+
+    let editing = false;
+    let editIndex = 0;
+
+    function Delete(i) {
+        users.splice(i, 1);
+        loadUsers();
+    }
+    function clearForm() {
+        addBTN.textContent = "Add";
+        theName.value = "";
+        theSurname.value = "";
+        theBirthday.value = "";
+        theGender.value = "";
+    }
+    function loadUsers() {
+        tBody.innerHTML = "";
+        for (i = 0; i < users.length; i++) {
+            tBody.innerHTML += `
+            <tr>
+                <td onclick="editBTN(${i})" id="theID">${users[i].id}</td>
+                <td>${users[i].name}</td>
+                <td>${users[i].surname}</td>
+                <td>${users[i].birthday}</td>
+                <td>${users[i].gender}</td>
+                <td><button onclick="Delete(${i})">Delete</button></td>
+            </tr>
+            `
+
+        }
+    };
+
+    function editBTN(i) {
+        addBTN.textContent = "Save";
+        const user = users[i];
+        theName.value = user.name;
+        theSurname.value = user.surname;
+        theBirthday.value = user.birthday;
+        theGender.value = user.gender;
+
+        editing = true;
+        editIndex = i;
+    }
+
+    addBTN.addEventListener("click", () => {
+
+        if (!editing) {
+            const newUser = {
+                id: Date.now(),
+                name: theName.value,
+                surname: theSurname.value,
+                birthday: theBirthday.value,
+                gender: theGender.value
+            }
+            users.push(newUser);
+        }
+        else {
+            editing = false;
+            users[editIndex].name = theName.value;
+            users[editIndex].surname = theSurname.value;
+            users[editIndex].birthday = theBirthday.value;
+            users[editIndex].gender = theGender.value;
+            console.log(editing)
+        }
+        loadUsers();
+        clearForm();
+    })
+
+    loadUsers();
+</script>
+
+</html>
